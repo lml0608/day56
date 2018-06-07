@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>student</title>
+
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css">
+</head>
+<body>
+<div class="container">
+    <div style="padding: 20px 0">
+        <a class="btn btn-primary">添加</a>
+        <a class="btn btn-danger">删除</a>
+    </div>
+
+    <div >
+        <table class="table table-bordered">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>性别</th>
+            <th>班级</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for stu in stu_list %}
+        <tr>
+
+            <td>{{ stu.id }}</td>
+            <td>{{ stu.username }}</td>
+            <td>{{ stu.age }}</td>
+            <td>{{ stu.gender }}</td>
+            <td>{{ stu.cs.title }}</td>
+            <td>
+                <a class="glyphicon glyphicon-remove" href="#"></a>
+                <a class="glyphicon glyphicon-edit" href="#"></a>
+            </td>
+
+        </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    </div>
+</div>
+
+</body>
+</html>
