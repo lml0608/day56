@@ -5,7 +5,7 @@
     <title>student</title>
 
     <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="/static/plugins/font-awesome/css/fontawesome-all.css">
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.css">
 
     <style type="text/css">
         .icon {
@@ -22,7 +22,7 @@
     </div>
 
     <div>
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
 
             <thead>
             <tr>
@@ -35,9 +35,9 @@
             </tr>
             </thead>
 
-            <tbody>
+            <tbody id="tb">
             {% for stu in stu_list %}
-                <tr>
+                <tr nid="{{ row.id }}">
 
                     <td>{{ stu.id }}</td>
                     <td>{{ stu.username }}</td>
@@ -45,8 +45,8 @@
                     <td>{{ stu.gender }}</td>
                     <td>{{ stu.cs.title }}</td>
                     <td>
-                        <a class="glyphicon glyphicon-remove icon" href="#"></a>
-                        <a class="fas fa-edit fa-1x icon" href="#"></a>
+                        <a class="glyphicon glyphicon-remove icon del-row"></a>
+                        <a class="fa fa-pencil-square-o icon"></a>
                     </td>
 
                 </tr>
@@ -57,6 +57,20 @@
     </div>
 </div>
 
+<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="alert alert-danger" role="alert">
+            <h3>删除学生信息？</h3>
+            <div>
+                ...<input style="display: none" type="text" id="delNid" />
+            </div>
+            <div>
+                <button type="button" class="btn btn-default">取消</button>
+                <button type="button" class="btn btn-danger">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -137,8 +151,21 @@
     $(function () {
         bindEvent();
         bindSave();
+        bindDel();
     });
 
+    function bindDel() {
+        $('.del-row').click(function () {
+            $('#delModal').modal('show');
+
+            var rowId = $(this).parent().parent().attr("nid");
+
+            $('#delNid').val(rowId)
+
+            $('#delNid').modal('show');
+
+        });
+    }
 
     function bindEvent() {
         $('#addBtn').click(function () {
@@ -182,11 +209,17 @@
                     //console.log(arg);
                     //JSON.parse()字符串转换成对象
                     var dict = JSON.parse(arg)
-                    //console.log(dict);
+                    console.log(dict);
 
                     if (dict.status){
+                        //一、刷新页面
+{#                        window.location.reload()#}
+                        //二、不刷新
+                        createRow(postData,dict.data);
 
-                        window.location.reload()
+                        $('#addModal').modal('hide');
+
+
 
                     }else {
 
@@ -198,12 +231,63 @@
                 }
 
 
-            });
+            })
 
         });
 
 
-    };
+    }
+    
+    
+    function createRow(postData, nid) {
+
+
+        var tr = document.createElement('tr');
+
+        var tdId = document.createElement('td');
+        tdId.innerHTML = nid;
+        $(tr).append(tdId);
+
+        var tdUser = document.createElement('td');
+        tdUser.innerHTML = postData.username;
+        $(tr).append(tdUser);
+
+        var tdAge = document.createElement('td');
+        tdAge.innerHTML = postData.age;
+        $(tr).append(tdAge);
+
+
+        var tdGender = document.createElement("td");
+
+        if (postData.gender == "0"){
+            tdGender.innerHTML = "False";
+        }else {
+            tdGender.innerHTML = "True";
+        }
+
+        $(tr).append(tdGender);
+
+        var tdClass = document.createElement("td");
+
+        var text = $('select[name="cls_id"]').find('option[value="'+ postData.cls_id +'"]').text();
+
+        tdClass.innerHTML = text;
+
+        $(tr).append(tdClass);
+
+
+        var tdHandle = '<td> <a class="glyphicon glyphicon-remove icon"></a><a class="fa fa-pencil-square-o icon"></a> </td>';
+
+        $(tr).append(tdHandle);
+
+
+
+        $('#tb').append(tr);
+
+
+
+
+    }
 </script>
 </body>
 </html>

@@ -31,11 +31,13 @@ def add_student(request):
         g = request.POST.get('gender')
         c = request.POST.get('cls_id')
 
-        Student.objects.create(
+        obj = Student.objects.create(
             username=u,
             age=a,
             gender=g,
             cs_id=c)
+
+        response['data'] = obj.id
 
     except Exception as e:
 
